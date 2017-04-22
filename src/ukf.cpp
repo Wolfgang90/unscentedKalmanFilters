@@ -111,8 +111,23 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     is_initialized = true;
   }
 
+  /**
+  * Prediction
+  */
+  double dt = (meas_package.timestamp_ - time_us_)/ 1000000.0; //dt - expressed in seconds
+  
+  time_us_ = meas_package.timestamp;
 
+  Prediction(dt);  
 
+  /**
+  * Update
+  */
+  if (meas_package.sensor_type_ == MeasurementPackage::LASER){
+    if (use_laser_) UpadateLidar(meas_package.raw_measurements_);
+  } else if (meas_package.sensor_type_ == MeasurementPackage::RADAR){
+    if (use_radar_) UpdateRadar(meas_package.raw_measurements_);
+  }
 }
 
 /**
