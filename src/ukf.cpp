@@ -258,7 +258,7 @@ void UKF::Prediction(double delta_t) {
     while (x_diff(3) > M_PI) x_diff(3) -= 2.0 * M_PI;
     while (x_diff(3) < -M_PI x_diff(3) += 2.0 * M_PI;
 
-    P = P + weights(i) * x_diff * x_diff.transpose();
+    P_ = P_ + weights(i) * x_diff * x_diff.transpose();
   }
 }
 
