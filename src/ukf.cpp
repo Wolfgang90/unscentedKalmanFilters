@@ -20,23 +20,22 @@ UKF::UKF() {
 
   // if this is false, radar measurements will be ignored (except during init)
   use_radar_ = true;
+  
+  n_x_ = 5;
+
+  n_aug_ = n_x_ + 2;
 
   // initial state vector
-  x_ = VectorXd(5);
+  x_ = VectorXd(n_x_);
 
   // initial covariance matrix
-  P_ = MatrixXd::Identity(5, 5);
-
-  // initial predicted sigma points matrix
-  Xsig_pred_ =
-
-  time_us_ =
+  P_ = MatrixXd::Identity(n_x_, n_x_);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 30;
+  std_a_ = 0.8;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 30;
+  std_yawdd_ = 0.6;
 
   // Laser measurement noise standard deviation position1 in m
   std_laspx_ = 0.15;
@@ -53,17 +52,17 @@ UKF::UKF() {
   // Radar measurement noise standard deviation radius change in m/s
   std_radrd_ = 0.3;
 
-  weights_ = VectorXd(2*7 + 1) // 2*n_aug_ + 1
-
-  n_x_ = 5;
-
-  n_aug_ = 7;
-
   lambda_ = 3 - n_aug_;
 
-  NIS_radar_ =
-
-  NIS_laser_ = 
+  weights_ = VectorXd(2*n_aug_ + 1);
+  
+  //set weights
+  double weight_0 = lambda_ / (lambda_ + n_aug_);
+  weights(0) = weight;
+  for (int i = 0; i < 2 * n_aug_ + 1; i++) {
+    double weight = 0.5 / (n_aug_ + lambda_);
+    weights(i) = weight;
+  }
 
   /**
   TODO:
@@ -233,13 +232,6 @@ void UKF::Prediction(double delta_t) {
   Predict mean and covariance
   */
 
-  //set weights
-  double weight_0 = lambda_ / (lambda_ + n_aug_);
-  weights(0) = weight;
-  for (int i = 0; i < 2 * n_aug_ + 1; i++) {
-    double weight = 0.5 / (n_aug_ + lambda_);
-    weights(i) = weight;
-  }
 
   
   //predicted state mean
@@ -459,4 +451,3 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
   NIS_radar_ = z_diff.transpose() * S.inverse() * z_diff;
 }
-
