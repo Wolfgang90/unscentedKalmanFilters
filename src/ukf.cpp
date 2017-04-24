@@ -25,7 +25,7 @@ UKF::UKF() {
   x_ = VectorXd(5);
 
   // initial covariance matrix
-  P_ = MatrixXd(5, 5);
+  P_ = MatrixXd::Identity(5, 5);
 
   // initial predicted sigma points matrix
   Xsig_pred_ =
@@ -55,11 +55,11 @@ UKF::UKF() {
 
   weights_ = 
 
-  n_x_ =
+  n_x_ = 5;
 
-  n_aug_ =
+  n_aug_ = 7;
 
-  lambda_ =
+  lambda_ = 3 - n_aug;
 
   NIS_radar_ =
 
@@ -142,7 +142,54 @@ void UKF::Prediction(double delta_t) {
   Complete this function! Estimate the object's location. Modify the state
   vector, x_. Predict sigma points, the state, and the state covariance matrix.
   */
+
+  /**
+  Generate matrix with augmented sigma points
+  */
+  
+  //create augmented mean vector
+  VectorXd x_aug = VectorXd(n_aug);
+
+  //crate augmented state covariance
+  MatrixXd P_aug = MatrixXd(n_aug_, n_aug_);
+
+  //create sigma point matrix
+  MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
+
+  //create augmented mean state
+  x_aug.head(n_x_) = x_;
+  x_aug(n_x_) = 0;
+  x_aug(n_x_ + 1) = 0;
+
+  //create augmented covariance matrix
+  P_aug.fill(0.0);
+  P_aug.topLeftCorner(n_x_, n_x_) = P_;
+  P_aug(n_x_, n_x_) = std_a_ * std_a_;
+  P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd_ * std_yawdd_;
+
+  //create square root matrix
+  MatrixXd L = P_aug.llt().matrixL();
+
+  //create augmented sigma points
+  Xsig_aug.col(0) = x_aug;
+  for (int i = 0; i < n_aug; i++) {
+    Xsig_aug.col(i+1) = x_aug + sqrt(lambda+n_aug) * L.col(i);
+    Xsig_aug.col(i+1+n_aug) = x_aug - sqrt(lambda + n_aug) * L.col(i);
+  }
+
+  /**
+  Generate matrix with sigma point prediction
+  */
+  
+  /**
+  Predict mean and covariance
+  */
+  x_ =
+
+  P_ =
+
 }
+
 
 /**
  * Updates the state and the state covariance matrix using a laser measurement.
