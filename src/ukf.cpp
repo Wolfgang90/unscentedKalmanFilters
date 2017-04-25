@@ -31,6 +31,10 @@ UKF::UKF() {
   // initial covariance matrix
   P_ = MatrixXd::Identity(n_x_, n_x_);
 
+  //create matrix with predicted sigma points as columns
+  Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ +1);
+  Xsig_pred_.fill(0.0);
+
   // Process noise standard deviation longitudinal acceleration in m/s^2
   std_a_ = 0.8;
 
@@ -88,14 +92,14 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   */
   if(!is_initialized_) {
 
-    if(meas_package.sensor_type_ = MeasurementPackage::LASER){
+    if(meas_package.sensor_type_ == MeasurementPackage::LASER){
       
       double px = meas_package.raw_measurements_[0];
       double py = meas_package.raw_measurements_[1];
 
       x_ << px, py, 0, 0, 0;
 
-    } else if (meas_package.sensor_type_ = MeasurementPackage::RADAR){
+    } else if (meas_package.sensor_type_ == MeasurementPackage::RADAR){
 
       double ro = meas_package.raw_measurements_[0];
       double phi = meas_package.raw_measurements_[1];
@@ -182,9 +186,6 @@ void UKF::Prediction(double delta_t) {
   /**
   Generate matrix with sigma point prediction
   */
-
-  //create matrix with predicted sigma points as columns
-  MatrixXd Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ +1);
 
   //predict sigma points
   for (int i = 0; i < 2 * n_aug_ +1; i++){
