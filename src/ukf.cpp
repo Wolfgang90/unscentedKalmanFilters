@@ -66,7 +66,7 @@ UKF::UKF() {
   //set weights
   double weight_0 = lambda_ / (lambda_ + n_aug_);
   weights_(0) = weight_0;
-  for (int i = 0; i < 2 * n_aug_ + 1; i++) {
+  for (int i = 1; i < 2 * n_aug_ + 1; i++) {
     double weight = 0.5 / (n_aug_ + lambda_);
     weights_(i) = weight;
   }
