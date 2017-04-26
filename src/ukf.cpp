@@ -158,20 +158,19 @@ void UKF::Prediction(double delta_t) {
   
   //create augmented mean vector
   VectorXd x_aug = VectorXd(n_aug_);
+  x_aug.fill(0.0);
 
   //crate augmented state covariance
   MatrixXd P_aug = MatrixXd(n_aug_, n_aug_);
+  P_aug.fill(0.0);
 
   //create sigma point matrix
   MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
   //create augmented mean state
   x_aug.head(n_x_) = x_;
-  x_aug(n_x_) = 0;
-  x_aug(n_x_ + 1) = 0;
 
   //create augmented covariance matrix
-  P_aug.fill(0.0);
   P_aug.topLeftCorner(n_x_, n_x_) = P_;
   P_aug(n_x_, n_x_) = std_a_ * std_a_;
   P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd_ * std_yawdd_;
