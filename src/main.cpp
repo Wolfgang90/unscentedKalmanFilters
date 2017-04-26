@@ -159,6 +159,14 @@ int main(int argc, char* argv[]) {
 
 
   for (size_t k = 0; k < number_of_measurements; ++k) {
+
+
+
+
+    cout << "Measurement: " << k+1 << endl;
+
+
+
     // Call the UKF-based fusion
     ukf.ProcessMeasurement(measurement_pack_list[k]);
 
