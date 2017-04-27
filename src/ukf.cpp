@@ -33,6 +33,8 @@ UKF::UKF() {
 
   // initial covariance matrix
   P_ = MatrixXd::Identity(n_x_, n_x_);
+  P_(0,0) = 0.5;
+  P_(1,1) = 0.5;
 
   //create matrix with predicted sigma points as columns
   Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ +1);
