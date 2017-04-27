@@ -111,6 +111,14 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
       double px = cos(phi) * ro;
       double py = sin(phi) * ro;
+ 
+      if(fabs(px) < 0.0001) {
+        px = 0.0001;
+      }
+
+      if(fabs(py) < 0.0001) {
+        py = 0.0001;
+      }
 
       x_ << px, py, 0, 0, 0;
     }
